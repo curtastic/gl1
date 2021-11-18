@@ -60,6 +60,7 @@ var gl1 =
 		
 		this.draws++
 	},
+	// Call this every frame to actually draw everything onto your canvas. Renders all drawImage calls since the last time you called drawEverything.
 	drawEverything: function()
 	{
 		var gl = this.gl

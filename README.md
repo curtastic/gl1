@@ -10,6 +10,7 @@ Features:
 - You can pass in a canvas instead of a PNG, alter the pixels of your canvas, and reload it into webGL's texture quickly.
 - Supports old devices/browsers including IE11 and iOS9.
 - Only 4KB minified.
+
 Does not include:
 - No hue-shift effect, blur effects, or Skew/3D effects.
 - No rotate about a point that isn't the image's center. But you can do that with your own math before passing drawX/drawY.

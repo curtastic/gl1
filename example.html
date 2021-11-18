@@ -1,0 +1,51 @@
+<html>
+	<body style='margin:0'>
+		<canvas id=gameCanvas></canvas>
+		
+		<script src='gl1.js'>
+		</script>
+		
+		<script>
+			// Make the game fill the whole screen, even after the screen resizes.
+			window.onresize = function()
+			{
+				gameCanvas.style.width = window.innerWidth+'px'
+				gameCanvas.style.height = window.innerHeight+'px'
+				gameCanvas.setAttribute('width', window.innerWidth)
+				gameCanvas.setAttribute('height', window.innerHeight)
+				gl1.resize()
+			}
+			
+			window.onload = function()
+			{
+				gl1.setup(gameCanvas, "tiles.png")
+				window.onresize()
+				gameLoop()
+			}
+			
+			var playerX = 0
+			var playerY = 11
+			function gameLoop()
+			{
+				window.requestAnimationFrame(gameLoop)
+				
+				playerX++
+				
+				// 64,0 is where the player is inside tiles.png.
+				gl1.drawImage(64,0, 32,32, playerX,playerY, 32,32)
+				
+				// This wall is stretched taller (88) when it's actually a 32x32 image.
+				gl1.drawImage(32,0, 32,32, 44,44, 32,88, undefined, playerX/15)
+				
+				// Alpha going over 128 makes it even brighter than normal.
+				var alpha = Math.floor((Math.sin(playerX / 15) + 1) / 2 * 255)
+				gl1.drawImage(32,0, 32,32, 44,44, 64,64, 0xFFFFFF00 + alpha)
+				
+				// Draw another wall without any green.
+				gl1.drawImage(32,0, 32,32, 111,111, 32,32, 0xFF00FF80)
+				
+				gl1.drawEverything()
+			}
+		</script>
+	</body>
+</html>

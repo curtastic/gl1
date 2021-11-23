@@ -27,15 +27,15 @@ var gl1 =
 	// texPart is what rectangular part of your PNG you want to draw right now. In pixels.
 	// drawX/drawY is a pixel position on the screen where 0,0 is top left of the screen, and the top left of the image.
 	// sizeX/sizeY is the size in pixels you want to draw at.
-	// rgba is optional. You can tint the image for example to green by passing 0x00FF0080.
-	//  rgba alpha goes from 0 to 128 (0x80) where 128 is not transparent at all. Higher than 128 will brighten the image more than normal.
+	// rgba is optional. You can tint the image for example to green by passing 0x00FF007F.
+	//  rgba alpha goes from 0 to 127 (0x7F) where 127 is not transparent at all. Higher than 127 will brighten the image more than normal.
 	// rotation is optional. In radians. Negative is allowed. Rotated about its center.
 	drawImage: function(texPartX, texPartY, texPartSizeX, texPartSizeY, drawX, drawY, sizeX, sizeY, rgba, rotation)
 	{
 		var i = this.draws * 6
 		
 		// Store rgba after position/texture. Default to white and fully opaque.
-		this.rgbas[i+4] = rgba || 0xFFFFFF80
+		this.rgbas[i+4] = rgba || 0xFFFFFF7F
 		
 		// Store how rotated we want this image to be.
 		this.rotations[i+5] = rotation || 0
@@ -139,11 +139,11 @@ var gl1 =
 				}\
 				gl_Position = vec4(drawPos.x/uCanvasSizeX - 1.0, 1.0 - drawPos.y/uCanvasSizeY, 0.0, 1.0);\
 				fragTexturePos = (aTexPos.xy + aTexPos.zw * aSizeMult) / uTexSize;\
-				if(aRgba.x > 128.0) {\
-					float colorMult = pow(2.0, (aRgba.x-128.0)/16.0) / 255.0;\
+				if(aRgba.x > 127.0) {\
+					float colorMult = pow(2.0, (aRgba.x-127.0)/16.0) / 255.0;\
 					fragAbgr = vec4(aRgba.w*colorMult, aRgba.z*colorMult, aRgba.y*colorMult, 1.0);\
 				} else\
-					fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, aRgba.x/128.0);\
+					fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, aRgba.x/127.0);\
 			}\
 		"
 

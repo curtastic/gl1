@@ -1,0 +1,149 @@
+<html>
+	<body style='margin:0'>
+		<canvas id=gameCanvas></canvas>
+		
+		<script src='gl1.js'></script>
+		
+		<div id=dpsDiv style='position:absolute;top:0;left:0;color:red;font-weight:bold;font-size:200%'></div>
+		
+		<script>
+			var canvasSizeX=0
+			var canvasSizeY=0
+			window.onresize = function() {
+				//on android it's very slow to read window.innerWidth in the loop. store them.
+				canvasSizeX = innerWidth
+				canvasSizeY = innerHeight
+				
+				gameCanvas.style.width = canvasSizeX+'px'
+				gameCanvas.style.height = canvasSizeY+'px'
+				gameCanvas.setAttribute('width', canvasSizeX)
+				gameCanvas.setAttribute('height', canvasSizeY)
+				
+				gl1.resize()
+			}
+			var guys=[]
+			var dpsTime=Date.now(), dpsDraws=0
+			var go=1, draw=1
+			window.onload = function() {
+				var match = window.location.search.match(/max=([0-9]+)/)
+				max=(match && match[1]*1) || 1000
+				
+				// You can disable movement to see if that changes FPS. Add to the url ?go=0
+				match = window.location.search.match(/go=([0-9]+)/)
+				if(match)
+					go=match[1]*1
+				
+				// You can disable rending to see if that changes FPS. It usually doesn't.
+				// If the FPS is slow in a gl1 game, it's usually because of simple JS operations done many times.
+				match = window.location.search.match(/draw=([0-9]+)/)
+				if(match)
+					draw=match[1]*1
+				
+				for(var i=0; i<max; i++) {
+					var y = Math.random()*innerHeight
+					
+					// Make some be stationary.
+					var speed = Math.random()*6
+					if(Math.random() < .2) {
+						speed = 0
+					}
+					
+					// Make some be players.
+					var texx = 32
+					if(Math.random() < .1) {
+						texx = 64
+					}
+					
+					// Some are semi transparent or brightened.
+					var alpha = 127
+					if(Math.random() < .1) {
+						alpha = Math.floor(Math.random()*255)
+					}
+					
+					// Some are rotated.
+					var angle = 0
+					if(Math.random() < .1) {
+						angle = Math.random()*7
+					}
+					
+					// Some are scaled up 2x.
+					var displaySize = 32
+					if(Math.random() < .1) {
+						displaySize *= 2
+					}
+					
+					// Some are tined with less red.
+					var rgb = 0xFFFFFF00
+					if(Math.random() < .1) {
+						var red = Math.floor(Math.random()*200)
+						var green = 255
+						var blue = 255
+						// Not doing red<<24 because that results in a negative number because JS can't do that large bit shifting.
+						rgb = red*0x1000000 + (green<<16) + (blue<<8)
+					}
+					
+					guys.push({
+						x: Math.random()*innerWidth,
+						y: y,
+						sizex: displaySize,
+						sizey: displaySize,
+						speed: speed,
+						speedx: speed,
+						speedy: speed,
+						texx: texx,
+						texx2: 32,
+						texy2: 32,
+						angle: angle,
+						color: rgb + alpha,
+					})
+					
+				}
+				
+				gl1.maxDraws = max*2
+				gl1.setup(gameCanvas, "tiles.png")
+				window.onresize()
+				gameLoop()
+			}
+			
+			var playerX = 0
+			function gameLoop()
+			{
+				window.requestAnimationFrame(gameLoop)
+				if(!gl1.ready) {
+					return
+				}
+				
+				dpsDraws++
+				if(Date.now() > dpsTime) {
+					dpsDiv.innerHTML = dpsDraws
+					dpsTime += 1000
+					dpsDraws=0
+				}
+				
+				for(var i=0; i<guys.length; i++) {
+					var guy = guys[i]
+					if(go) {
+						// Do the most simple movement. Not changing more things because it would slow things down.
+						// Simple JS operations like this is the bottleneck, not the rendering of webGL.
+						guy.x += guy.speedx
+						guy.y += guy.speedy
+						if(guy.x > canvasSizeX)
+							guy.speedx = -guy.speed
+						else if(guy.x < 0)
+							guy.speedx = guy.speed
+						if(guy.y > canvasSizeY)
+							guy.speedy = -guy.speed
+						else if(guy.y < 0)
+							guy.speedy = guy.speed
+					}
+					gl1.drawImage(guy.texx, 0, guy.texx2, guy.texy2, guy.x, guy.y, guy.sizex, guy.sizey, guy.color, guy.angle, guy.id)
+				}
+				
+				if(draw) {
+					gl1.drawEverything()
+				}
+				
+			}
+		</script>
+	</body>
+</html>

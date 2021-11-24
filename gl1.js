@@ -26,9 +26,9 @@ var gl1 =
 	maxDraws: 10000,
 	// Internal count of images drawn so far this frame.
 	draws: 0,
-	// texPart is what rectangular part of your PNG you want to draw right now. In pixels.
+	// texPart is what rectangular part of your big PNG you want to draw right now. In pixels.
 	// drawX/drawY is a pixel position on the screen where 0,0 is top left of the screen, and the top left of the image.
-	// sizeX/sizeY is the size in pixels you want to draw at.
+	// sizeX/sizeY is the size in pixels you want to draw at. If you don't want to scale, it should be the same as texPartSizeX/texPartSizeY.
 	// rgba is optional. You can tint the image for example to green by passing 0x00FF007F.
 	//  rgba alpha goes from 0 to 127 (0x7F) where 127 is not transparent at all. Higher than 127 will brighten the image more than normal.
 	// rotation is optional. In radians. Negative is allowed. Rotated about its center.
@@ -198,9 +198,9 @@ var gl1 =
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 0,1, 1,0, 1,1]), gl.STATIC_DRAW)
 
 		// Size multiplier vec2 variable. This code goes here so that it's linked to the Float32Array above, using those values.
-		var location = gl.getAttribLocation(shaderProgram, "aSizeMult")
-		gl.enableVertexAttribArray(location)
-		gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 0, 0)
+		var attribute = gl.getAttribLocation(shaderProgram, "aSizeMult")
+		gl.enableVertexAttribArray(attribute)
+		gl.vertexAttribPointer(attribute, 2, gl.FLOAT, false, 0, 0)
 
 		// Whenever we call our drawImage(), we put in 2 shorts into our arrayBuffer for position (drawX,drawY)
 		var shortsPerImagePosition = 2
@@ -236,10 +236,10 @@ var gl1 =
 		// Tell gl where read from our arrayBuffer to set our shader attibute variables each time an image is drawn.
 		var setupAttribute = function(name, dataType, amount)
 		{
-			var location = gl.getAttribLocation(shaderProgram, name)
-			gl.enableVertexAttribArray(location)
-			gl.vertexAttribPointer(location, amount, dataType, false, bytesPerImage, byteOffset)
-			extension.vertexAttribDivisorANGLE(location, 1)
+			var attribute = gl.getAttribLocation(shaderProgram, name)
+			gl.enableVertexAttribArray(attribute)
+			gl.vertexAttribPointer(attribute, amount, dataType, false, bytesPerImage, byteOffset)
+			extension.vertexAttribDivisorANGLE(attribute, 1)
 			if(dataType == gl.SHORT)
 				amount *= 2
 			if(dataType == gl.FLOAT)

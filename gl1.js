@@ -16,6 +16,8 @@
 	- No hue-shift effect, blur effects, or Skew/3D effects.
 	- No rotate about a point that isn't the image's center. But you can do that with your own math before passing drawX/drawY.
 	- No camera object. But you can offset things yourself if you want scrolling.
+	- No drawing other primitive shapes besides images and rectangles.
+	- No font or svg support.
 */
 
 var gl1 =

@@ -60,6 +60,12 @@ var gl1 =
 		
 		this.draws++
 	},
+	// A handy function for when you want to draw rectangles. For example debugging hitboxes, or to darken everything with semi-transparent black overlay.
+	// This assumes the top left pixel in your texture is white, so you can stretch/tint it to any size/color rectangle.
+	drawRect: function(drawX, drawY, sizeX, sizeY, rgba, rotation)
+	{
+		this.drawImage(0, 0, 1, 1, drawX, drawY, sizeX, sizeY, rgba, rotation)
+	},
 	// Call this every frame to actually draw everything onto your canvas. Renders all drawImage calls since the last time you called drawEverything.
 	drawEverything: function()
 	{
@@ -225,7 +231,7 @@ var gl1 =
 		
 		var byteOffset = 0
 		
-		// Tel gl where read from our arrayBuffer to set our shader attibute variables each time an image is drawn.
+		// Tell gl where read from our arrayBuffer to set our shader attibute variables each time an image is drawn.
 		var setupAttribute = function(name, dataType, amount)
 		{
 			var location = gl.getAttribLocation(shaderProgram, name)
@@ -261,14 +267,14 @@ var gl1 =
 			var gl1 = this
 			image.onload = function()
 			{
-				gl1.texLoadFromJsImage(image)
+				gl1.loadTexFromJsImage(image)
 				gl1.ready = true
 			}
 			image.src = texFileName
 		}
 	},
 	// This is a separate function so that you can call it again mid-game to change the artwork if you load a new image or canvas.
-	texLoadFromJsImage: function(image)
+	loadTexFromJsImage: function(image)
 	{
 		var gl = this.gl
 		

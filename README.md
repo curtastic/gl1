@@ -7,6 +7,9 @@ Designed and optimized for 2D web games where all the graphics fit into 1 PNG.
 Try the example:
 https://curtastic.com/gl/
 
+Try speed test with 100,000 images:
+https://curtastic.com/gl/speedtest.html?max=100000
+
 Features:
 - Real time rotation, without slowdown.
 - Real time semi-transparent drawing, without slowdown.

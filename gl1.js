@@ -94,13 +94,9 @@ var gl1 =
 		gl.viewport(0, 0, this.canvas.width, this.canvas.height)
 		
 		// Update the shader variables for canvas size.
-		// Sending it to gl now so we don't have to do the math in JavaScript on every draw.
-		// Since gl wants to draw at a position from 0 to 1, and we want to do drawImage with a screen pixel position.
-		var loc = gl.getUniformLocation(this.shaderProgram, "uCanvasSizeX")
-		gl.uniform1f(loc, this.canvas.width/2)
-		
-		var loc = gl.getUniformLocation(this.shaderProgram, "uCanvasSizeY")
-		gl.uniform1f(loc, this.canvas.height/2)
+		// Sending it to gl now so we don't have to do the math in JavaScript on every draw,
+		// since gl wants to draw at a position from 0 to 1, and we want to do drawImage with a screen pixel position.
+		gl.uniform2f(gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width/2, this.canvas.height/2)
 	},
 	setup: function(canvas, texFileName)
 	{
@@ -131,8 +127,7 @@ var gl1 =
 			varying highp vec2 fragTexturePos;\
 			varying vec4 fragAbgr;\
 			\
-			uniform lowp float uCanvasSizeX;\
-			uniform lowp float uCanvasSizeY;\
+			uniform vec2 uCanvasSize;\
 			uniform vec2 uTexSize;\
 			\
 			void main(void){\
@@ -141,11 +136,11 @@ var gl1 =
 					float goX = cos(aRotation);\
 					float goY = sin(aRotation);\
 					vec2 cornerPos = aSize * (aSizeMult-0.5);\
-					drawPos = aPos + vec2(goX*cornerPos.x - goY*cornerPos.y, goY*cornerPos.x + goX*cornerPos.y) + aSize/2.0;\
+					drawPos = (aPos + vec2(goX*cornerPos.x - goY*cornerPos.y, goY*cornerPos.x + goX*cornerPos.y) + aSize/2.0) / uCanvasSize;\
 				} else {\
-					drawPos = aPos + aSize*aSizeMult;\
+					drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
 				}\
-				gl_Position = vec4(drawPos.x/uCanvasSizeX - 1.0, 1.0 - drawPos.y/uCanvasSizeY, 0.0, 1.0);\
+				gl_Position = vec4(drawPos.x - 1.0, 1.0 - drawPos.y, 0.0, 1.0);\
 				fragTexturePos = (aTexPos.xy + aTexPos.zw * aSizeMult) / uTexSize;\
 				if(aRgba.x > 127.0) {\
 					float colorMult = pow(2.0, (aRgba.x-127.0)/16.0) / 255.0;\

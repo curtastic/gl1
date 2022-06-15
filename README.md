@@ -2,16 +2,16 @@ gl1.js
 
 A webGL 2D graphics library.
 
-Designed and optimized for 2D web games where all the graphics fit into 1 PNG.
+Designed and optimized for 2D web games that can fit all their graphics into 1 PNG.
 
 Try the example:
 https://curtastic.com/gl/
 
-Try speed test with 100,000 images:
-https://curtastic.com/gl/speedtest.html?max=100000
+Try the speed test with 50,000 images:
+https://curtastic.com/gl/speedtest.html?max=50000
 
 Features:
-- Real time rotation, without slowdown.
+- Real time rotation, without slowdown. (meaning the same speed as not using rotation)
 - Real time semi-transparent drawing, without slowdown.
 - Real time color tinting/brightening, without slowdown.
 - Renders 50,000 moving images with real time rotation, tinting, and transparency at 60FPS on an old iPhone SE 2015.
